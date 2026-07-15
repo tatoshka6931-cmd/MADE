@@ -1,0 +1,9 @@
+{
+  "name": "student-photo-portfolio",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Airtable-backed photo portfolio tool for student projects.",
+  "scripts": {
+    "dev": "vercel dev"
+  }
+}

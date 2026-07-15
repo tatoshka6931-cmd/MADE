@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Photo Portfolio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="shell">
+    <header class="site-header">
+      <div class="mark">MADE@TheWOnd'ry<span class="dot">.</span></div>
+      <nav>
+        <a href="portfolio.html">View my portfolio &rarr;</a>
+      </nav>
+    </header>
+
+    <div class="sprockets on-dark"></div>
+    <div style="background: var(--ink-raised); padding: 40px 32px; border: 1px solid var(--rule); border-top: none; border-radius: 0 0 3px 3px; margin-bottom: 8px;">
+      <h1 style="font-size: 34px; margin-bottom: 12px;">Made something? Document it here.</h1>
+      <p style="color: var(--ash); max-width: 46ch; line-height: 1.6; font-size: 16px;">
+        Use the photobox to snap a picture of what you built, then log it below.
+        Every submission gets added to your personal portfolio automatically.
+      </p>
+    </div>
+    <div class="sprockets"></div>
+
+    <div class="card-grid">
+      <!-- TODO: replace with real Airtable form share link -->
+      <a class="action-card" href="https://airtable.com/appF4Clb5qcPFBgS1/shrZjb9tpgnpT2ExX" target="_blank" rel="noopener">
+        <span class="label">Log a photo</span>
+        <h3>Submit to your portfolio</h3>
+        <p>Attach your photobox picture, then tell the form whether it belongs to a new project or one you've already logged.</p>
+        <span class="btn btn-primary" style="margin-top: auto;">Open form &rarr;</span>
+      </a>
+
+      <a class="action-card" href="portfolio.html">
+        <span class="label">View</span>
+        <h3>See your portfolio</h3>
+        <p>Type in the email you used on the form to pull up everything you've submitted so far.</p>
+        <span class="btn btn-secondary" style="margin-top: auto;">Open portfolio &rarr;</span>
+      </a>
+    </div>
+
+    <p class="status-line">
+      One form handles both new and existing projects. <Img:s></Img:s>t'll ask you to pick your project from a search box, or start a new one if it's not listed yet.
+    </p>
+  </div>
+</body>
+</html>
