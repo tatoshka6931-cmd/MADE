@@ -86,14 +86,21 @@ a { color: inherit; }
   font-family: 'Margin', 'Oswald', sans-serif;
   font-weight: 700;
   font-size: 2.5em;
-  line-height: 0.8;
+  line-height: 1;
   letter-spacing: 0.06em;
+}
+
+.site-header .mark-at {
+  font-family: 'Loew Heavy', 'Arial Black', Arial, sans-serif;
+  font-size: 1em;
+  font-weight: 800;
+  line-height: 1;
 }
 
 .site-header .mark-logo {
   display: block;
   width: auto;
-  height: 2.5em;
+  height: 1em;
 }
 
 .site-header nav {
