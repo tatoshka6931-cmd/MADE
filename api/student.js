@@ -66,7 +66,9 @@ module.exports = async (req, res) => {
           const attachments = record.fields['Photo'] || [];
           return attachments.map((attachment, i) => ({
             id: `${record.id}-${i}`,
-            url: attachment.url,
+            // iPhones often upload HEIC files, which browsers do not reliably
+            // render. Airtable's generated thumbnail is a browser-safe image.
+            url: attachment.thumbnails?.full?.url || attachment.thumbnails?.large?.url || attachment.url,
             caption: record.fields['Caption'] || '',
             uploadedAt: record.fields['Uploaded At'] || record.createdTime,
           }));

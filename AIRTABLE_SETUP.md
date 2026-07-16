@@ -94,6 +94,7 @@ let projectsTable = base.getTable('Projects');
 let photosTable = base.getTable('Photos');
 
 let email = (config.studentEmail || '').trim().toLowerCase();
+let submissionType = (config.submissionType || '').trim().toLowerCase();
 
 if (!email) {
   console.log('No student email on this submission — nothing to link.');
@@ -112,7 +113,7 @@ if (!email) {
 
   // Find or create the project
   let projectId = null;
-  if (config.submissionType === 'New project' && config.newProjectName) {
+  if (submissionType === 'new project' && config.newProjectName) {
     projectId = await projectsTable.createRecordAsync({
       'Project Name': config.newProjectName,
       Student: [{ id: studentId }],
