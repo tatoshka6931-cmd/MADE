@@ -2,6 +2,21 @@
    Design tokens — a darkroom / contact-sheet identity, since the
    whole flow starts at a physical photobox.
 --------------------------------------------------------------- */
+
+@font-face {
+  font-family: 'Margin';
+  src: url('/fonts/Margin.otf') format('opentype');
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Loew Heavy';
+  src: url('/fonts/Loew-Heavy.otf') format('opentype');
+  font-weight: 800;
+  font-display: swap;
+}
+
+
 :root {
   --ink: #17181a;        /* darkroom background */
   --ink-raised: #1f2022;
@@ -60,14 +75,28 @@ a { color: inherit; }
 }
 
 .site-header .mark {
-  font-family: 'Oswald', sans-serif;
   font-size: 20px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+  display: inline-flex;
+  align-items: baseline;
+  white-space: nowrap;
 }
 
-.site-header .mark .dot {
-  color: var(--safelight);
+.site-header .mark-made {
+  font-family: 'Margin', 'Oswald', sans-serif;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+}
+
+.site-header .mark-wondry {
+  font-family: 'Loew Heavy', 'Arial Black', Arial, sans-serif;
+  font-weight: 800;
+  letter-spacing: 0.01em;
+}
+
+.site-header .mark-apostrophe {
+  font-family: Arial, sans-serif;
+  font-weight: 400;
+  letter-spacing: 0;
 }
 
 .site-header nav a {

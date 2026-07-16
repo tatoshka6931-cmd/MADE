@@ -118,9 +118,12 @@ if (!email) {
       'Project Name': config.newProjectName,
       Student: [{ id: studentId }],
     });
-  } else if (config.existingProjectId) {
-    let linked = config.existingProjectId;
-    projectId = Array.isArray(linked) ? linked[0].id : linked;
+  } else {
+    // Read the linked record directly from the submitted Photo. This is
+    // more reliable than an automation input variable for linked fields.
+    let submittedPhoto = await photosTable.selectRecordAsync(config.photoRecordId);
+    let linked = submittedPhoto && submittedPhoto.getCellValue('Existing Project');
+    projectId = Array.isArray(linked) ? linked[0]?.id : null;
   }
 
   // Link this photo record to the resolved project
