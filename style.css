@@ -77,11 +77,9 @@ a { color: inherit; }
 .site-header .mark {
   font-size: 20px;
   display: inline-flex;
-  align-items: baseline;
+  align-items: center;
+  gap: 10px;
   white-space: nowrap;
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
 }
 
 .site-header .mark-made {
@@ -92,21 +90,10 @@ a { color: inherit; }
   letter-spacing: 0.06em;
 }
 
-.site-header .mark-wondry {
-  font-family: 'Loew Heavy', 'Arial Black', Arial, sans-serif;
-  font-weight: 800;
-  letter-spacing: 0.01em;
-}
-
-.site-header .mark-apostrophe {
-  display: inline-block;
-  font-family: Arial, Helvetica, sans-serif !important;
-  font-size: 1em;
-  font-weight: 400;
-  font-style: normal;
-  line-height: 1;
-  letter-spacing: 0;
-  transform: translateY(-0.1em);
+.site-header .mark-logo {
+  display: block;
+  width: auto;
+  height: 2.5em;
 }
 
 .site-header nav {
