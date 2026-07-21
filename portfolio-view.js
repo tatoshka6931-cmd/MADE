@@ -161,7 +161,7 @@ async function downloadProjectPdf() {
     pdf.text(studentNameLines, margin, cursorY);
     cursorY += studentNameLines.length * 9 + 8;
 
-    pdf.setFont('times', 'bold');
+    pdf.setFont('helvetica', 'bold');
     pdf.setFontSize(35);
     pdf.setTextColor(23);
     const titleLines = pdf.splitTextToSize(loadedProject.name, contentWidth);

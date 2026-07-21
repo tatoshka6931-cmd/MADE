@@ -454,7 +454,7 @@ a { color: inherit; }
   max-width: 62ch;
   margin: 0 0 13px;
   color: #40444a;
-  font-size: clamp(25px, 3vw, 33px);
+  font-size: clamp(17px, 2vw, 22px);
   font-weight: 500;
   letter-spacing: normal;
   line-height: 1.5;
