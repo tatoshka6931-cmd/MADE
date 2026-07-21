@@ -28,6 +28,14 @@ function escapeForFormula(value) {
   return value.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
 }
 
+function getDescriptionValue(fields) {
+  const fieldNames = ['Description', 'Project Description', 'Project Descriotion'];
+  const normalizedNames = new Set(fieldNames.map((name) => name.toLowerCase().replace(/[^a-z]/g, '')));
+  const key = Object.keys(fields).find((name) => normalizedNames.has(name.toLowerCase().replace(/[^a-z]/g, '')));
+  const value = key ? fields[key] : '';
+  return Array.isArray(value) ? value.filter(Boolean).join('\n') : String(value || '');
+}
+
 module.exports = async (req, res) => {
   const email = (req.query.email || '').trim().toLowerCase();
   if (!email) return res.status(400).json({ error: 'Missing email' });
@@ -79,10 +87,16 @@ module.exports = async (req, res) => {
           .filter((p) => p.url)
           .sort((a, b) => new Date(b.uploadedAt) - new Date(a.uploadedAt));
 
+        // Descriptions are collected by the Photos form, not stored on the
+        // linked Projects record. A project may have several photo records;
+        // use its first supplied non-empty description.
+        const description = getDescriptionValue(project.fields)
+          || photoRecords.map((record) => getDescriptionValue(record.fields)).find((value) => value.trim());
+
         return {
           id: project.id,
           name: project.fields['Project Name'] || 'Untitled project',
-          description: project.fields['Description'] || project.fields['Project Description'] || '',
+          description: description || '',
           status: project.fields['Status'] || '',
           photos: sortedPhotos,
         };
