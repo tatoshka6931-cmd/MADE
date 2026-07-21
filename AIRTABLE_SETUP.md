@@ -27,6 +27,7 @@ workaround.
 | Field | Type |
 |---|---|
 | Project Name | Single line text (make this the **primary field**) |
+| Description | Long text (optional — shown beneath the project name in the portfolio) |
 | Status | Single select (optional — e.g. In Progress / Done) |
 | Student | Linked record → Students |
 | Photos | Linked record → Photos (auto-created as the reciprocal of the field below) |

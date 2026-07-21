@@ -82,6 +82,7 @@ module.exports = async (req, res) => {
         return {
           id: project.id,
           name: project.fields['Project Name'] || 'Untitled project',
+          description: project.fields['Description'] || project.fields['Project Description'] || '',
           status: project.fields['Status'] || '',
           photos: sortedPhotos,
         };
