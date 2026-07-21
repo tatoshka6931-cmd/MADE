@@ -143,33 +143,43 @@ async function downloadProjectPdf() {
     pdf.text(`${loadedStudentName}  |  ${getProjectDateRange(loadedProject)}`, margin, cursorY);
     cursorY += 12;
 
-    for (let index = 0; index < loadedProject.photos.length; index += 1) {
-      const photo = loadedProject.photos[index];
-      const image = await loadPdfImage(photo.url);
-      const imageRatio = image.naturalWidth / image.naturalHeight;
-      const maxImageHeight = 190;
-      let imageWidth = contentWidth;
-      let imageHeight = imageWidth / imageRatio;
-      if (imageHeight > maxImageHeight) {
-        imageHeight = maxImageHeight;
-        imageWidth = imageHeight * imageRatio;
-      }
-      const caption = photo.caption || formatDate(photo.uploadedAt);
-      const captionLines = pdf.splitTextToSize(`${String(index + 1).padStart(2, '0')}  ${caption}`, contentWidth);
-      const requiredHeight = imageHeight + 10 + captionLines.length * 5 + 12;
+    // A compact two-column gallery uses the page efficiently while keeping
+    // every photo and caption together in a clean, consistent tile.
+    const images = await Promise.all(loadedProject.photos.map((photo) => loadPdfImage(photo.url)));
+    const columnGap = 7;
+    const tileWidth = (contentWidth - columnGap) / 2;
+    const maxImageHeight = 92;
 
-      if (cursorY + requiredHeight > pageHeight - margin) {
+    for (let rowStart = 0; rowStart < loadedProject.photos.length; rowStart += 2) {
+      const row = loadedProject.photos.slice(rowStart, rowStart + 2).map((photo, offset) => {
+        const image = images[rowStart + offset];
+        const ratio = image.naturalWidth / image.naturalHeight;
+        let imageWidth = tileWidth;
+        let imageHeight = imageWidth / ratio;
+        if (imageHeight > maxImageHeight) {
+          imageHeight = maxImageHeight;
+          imageWidth = imageHeight * ratio;
+        }
+        const caption = photo.caption || formatDate(photo.uploadedAt);
+        const captionLines = pdf.splitTextToSize(`${String(rowStart + offset + 1).padStart(2, '0')}  ${caption}`, tileWidth);
+        return { photo, image, imageWidth, imageHeight, captionLines, height: imageHeight + 6 + captionLines.length * 4 + 7 };
+      });
+      const rowHeight = Math.max(...row.map((tile) => tile.height));
+
+      if (cursorY + rowHeight > pageHeight - margin) {
         pdf.addPage();
         cursorY = margin;
       }
 
-      const imageX = margin + (contentWidth - imageWidth) / 2;
-      pdf.addImage(image, photo.contentType === 'image/png' ? 'PNG' : 'JPEG', imageX, cursorY, imageWidth, imageHeight);
-      cursorY += imageHeight + 7;
-      pdf.setFontSize(10);
-      pdf.setTextColor(65);
-      pdf.text(captionLines, margin, cursorY);
-      cursorY += captionLines.length * 5 + 12;
+      row.forEach((tile, column) => {
+        const tileX = margin + column * (tileWidth + columnGap);
+        const imageX = tileX + (tileWidth - tile.imageWidth) / 2;
+        pdf.addImage(tile.image, tile.photo.contentType === 'image/png' ? 'PNG' : 'JPEG', imageX, cursorY, tile.imageWidth, tile.imageHeight);
+        pdf.setFontSize(9);
+        pdf.setTextColor(65);
+        pdf.text(tile.captionLines, tileX, cursorY + tile.imageHeight + 5);
+      });
+      cursorY += rowHeight + 4;
     }
 
     const filename = `${safeFilename(loadedStudentName)}-${safeFilename(loadedProject.name)}-portfolio.pdf`;
