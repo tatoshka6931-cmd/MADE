@@ -408,6 +408,17 @@ a { color: inherit; }
   color: #202226;
 }
 
+.presentation-header-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 12px;
+}
+.presentation-logo {
+  display: block;
+  width: min(180px, 24vw);
+  height: auto;
+}
 .presentation-actions { display: flex; gap: 8px; }
 .presentation-action {
   appearance: none;
@@ -427,7 +438,6 @@ a { color: inherit; }
 
 .presentation-back,
 .presentation-wordmark,
-.presentation-eyebrow,
 .presentation-details,
 .presentation-piece figcaption {
   font-family: 'DM Mono', monospace;
@@ -438,7 +448,6 @@ a { color: inherit; }
 
 .presentation-back { text-decoration: none; }
 .presentation-back:hover { text-decoration: underline; }
-.presentation-wordmark { color: #777b82; }
 .presentation-status { margin-top: 72px; color: #666b72; }
 .presentation-status.is-error { color: #a43030; }
 
@@ -447,7 +456,15 @@ a { color: inherit; }
   max-width: 850px;
 }
 
-.presentation-eyebrow { color: #74777c; margin: 0 0 18px; }
+.presentation-wordmark { margin: 0 0 13px; color: #74777c; }
+.presentation-student-name {
+  margin: 0 0 22px;
+  color: #202226;
+  font-size: clamp(24px, 3.2vw, 38px);
+  font-weight: 800;
+  letter-spacing: -.035em;
+  line-height: 1.05;
+}
 .presentation-hero h1 {
   font-family: 'Playfair Display', Georgia, serif;
   font-size: clamp(56px, 10vw, 122px);
@@ -502,10 +519,11 @@ a { color: inherit; }
 
 @media (max-width: 560px) {
   .presentation-shell { width: min(100% - 32px, 1180px); padding-top: 20px; }
-  .presentation-wordmark { display: none; }
   .roll-header { gap: 12px; }
   .project-view-link { padding: 9px 10px; font-size: 10px; }
   .presentation-action { padding: 9px 8px; font-size: 9px; }
+  .presentation-header-right { gap: 9px; }
+  .presentation-logo { width: 128px; }
   .presentation-gallery { grid-template-columns: 1fr; gap: 34px; }
   .presentation-piece img { height: auto; max-height: 480px; }
 }

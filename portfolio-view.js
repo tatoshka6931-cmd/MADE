@@ -35,9 +35,12 @@ function renderProject(project, studentName) {
 
   const hero = document.createElement('section');
   hero.className = 'presentation-hero';
-  const eyebrow = document.createElement('p');
-  eyebrow.className = 'presentation-eyebrow';
-  eyebrow.textContent = studentName;
+  const wordmark = document.createElement('p');
+  wordmark.className = 'presentation-wordmark';
+  wordmark.textContent = "Wond'ry Project Portfolio";
+  const studentNameEl = document.createElement('p');
+  studentNameEl.className = 'presentation-student-name';
+  studentNameEl.textContent = studentName;
   const title = document.createElement('h1');
   title.textContent = project.name;
   const projectDescription = getProjectDescription(project);
@@ -50,7 +53,7 @@ function renderProject(project, studentName) {
   const details = document.createElement('p');
   details.className = 'presentation-details';
   details.textContent = `${project.photos.length} selected work${project.photos.length === 1 ? '' : 's'}${project.status ? ` · ${project.status}` : ''}`;
-  hero.append(eyebrow, title);
+  hero.append(wordmark, studentNameEl, title);
   if (projectDescription) hero.appendChild(description);
   hero.append(dateRange, details);
   presentationEl.appendChild(hero);
