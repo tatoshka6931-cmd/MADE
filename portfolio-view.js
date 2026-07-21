@@ -5,6 +5,8 @@ const savePdfBtn = document.getElementById('save-presentation-pdf');
 const params = new URLSearchParams(window.location.search);
 const email = params.get('email');
 const projectId = params.get('project');
+let loadedProject;
+let loadedStudentName;
 
 async function loadProject() {
   if (!email || !projectId) {
@@ -25,6 +27,8 @@ async function loadProject() {
 }
 
 function renderProject(project, studentName) {
+  loadedProject = project;
+  loadedStudentName = studentName;
   document.title = `${project.name} — ${studentName}`;
   statusEl.hidden = true;
   presentationEl.hidden = false;
@@ -111,6 +115,89 @@ copyLinkBtn.addEventListener('click', async () => {
   }
 });
 
-savePdfBtn.addEventListener('click', () => window.print());
+savePdfBtn.addEventListener('click', downloadProjectPdf);
+
+async function downloadProjectPdf() {
+  if (!loadedProject || !window.jspdf) return;
+
+  const originalLabel = savePdfBtn.textContent;
+  savePdfBtn.disabled = true;
+  savePdfBtn.textContent = 'Preparing PDF…';
+
+  try {
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF({ unit: 'mm', format: 'a4' });
+    const pageWidth = pdf.internal.pageSize.getWidth();
+    const pageHeight = pdf.internal.pageSize.getHeight();
+    const margin = 16;
+    const contentWidth = pageWidth - margin * 2;
+    let cursorY = 22;
+
+    pdf.setFont('helvetica', 'bold');
+    pdf.setFontSize(25);
+    pdf.text(loadedProject.name, margin, cursorY, { maxWidth: contentWidth });
+    cursorY += 14;
+    pdf.setFont('helvetica', 'normal');
+    pdf.setFontSize(10);
+    pdf.setTextColor(90);
+    pdf.text(`${loadedStudentName}  |  ${getProjectDateRange(loadedProject)}`, margin, cursorY);
+    cursorY += 12;
+
+    for (let index = 0; index < loadedProject.photos.length; index += 1) {
+      const photo = loadedProject.photos[index];
+      const image = await loadPdfImage(photo.url);
+      const imageRatio = image.naturalWidth / image.naturalHeight;
+      const maxImageHeight = 190;
+      let imageWidth = contentWidth;
+      let imageHeight = imageWidth / imageRatio;
+      if (imageHeight > maxImageHeight) {
+        imageHeight = maxImageHeight;
+        imageWidth = imageHeight * imageRatio;
+      }
+      const caption = photo.caption || formatDate(photo.uploadedAt);
+      const captionLines = pdf.splitTextToSize(`${String(index + 1).padStart(2, '0')}  ${caption}`, contentWidth);
+      const requiredHeight = imageHeight + 10 + captionLines.length * 5 + 12;
+
+      if (cursorY + requiredHeight > pageHeight - margin) {
+        pdf.addPage();
+        cursorY = margin;
+      }
+
+      const imageX = margin + (contentWidth - imageWidth) / 2;
+      pdf.addImage(image, photo.contentType === 'image/png' ? 'PNG' : 'JPEG', imageX, cursorY, imageWidth, imageHeight);
+      cursorY += imageHeight + 7;
+      pdf.setFontSize(10);
+      pdf.setTextColor(65);
+      pdf.text(captionLines, margin, cursorY);
+      cursorY += captionLines.length * 5 + 12;
+    }
+
+    const filename = `${safeFilename(loadedStudentName)}-${safeFilename(loadedProject.name)}-portfolio.pdf`;
+    pdf.save(filename);
+  } catch (error) {
+    console.error(error);
+    savePdfBtn.disabled = false;
+    savePdfBtn.textContent = 'Download failed';
+    setTimeout(() => { savePdfBtn.textContent = originalLabel; }, 2000);
+    return;
+  }
+
+  savePdfBtn.disabled = false;
+  savePdfBtn.textContent = originalLabel;
+}
+
+function loadPdfImage(url) {
+  return new Promise((resolve, reject) => {
+    const image = new Image();
+    image.crossOrigin = 'anonymous';
+    image.onload = () => resolve(image);
+    image.onerror = () => reject(new Error('One of the project images could not be added to the PDF.'));
+    image.src = url;
+  });
+}
+
+function safeFilename(value) {
+  return value.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '') || 'project';
+}
 
 loadProject();

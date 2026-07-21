@@ -423,6 +423,7 @@ a { color: inherit; }
 }
 .presentation-action:hover, .presentation-action:focus-visible { border-color: #202226; }
 .presentation-action-dark { background: #202226; border-color: #202226; color: #fff; }
+.presentation-action:disabled { cursor: wait; opacity: .7; }
 
 .presentation-back,
 .presentation-wordmark,
