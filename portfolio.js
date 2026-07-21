@@ -74,6 +74,12 @@ function renderRoll(project, rollNumber) {
   meta.className = 'roll-meta mono';
   meta.textContent = `${project.photos.length} photo${project.photos.length === 1 ? '' : 's'}${project.status ? ' · ' + project.status : ''}`;
   roll.appendChild(meta);
+  const viewLink = document.createElement('a');
+  viewLink.className = 'btn btn-secondary project-view-link';
+  viewLink.href = `portfolio-view.html?email=${encodeURIComponent(emailInput.value.trim())}&project=${encodeURIComponent(project.id)}`;
+  viewLink.textContent = 'View project portfolio ↗';
+  viewLink.setAttribute('aria-label', `View ${project.name} as a portfolio`);
+  roll.appendChild(viewLink);
   const sheet = document.createElement('div');
   sheet.className = 'frame-sheet';
   const sprockets = document.createElement('div');
