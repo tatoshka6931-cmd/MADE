@@ -408,16 +408,11 @@ a { color: inherit; }
   color: #202226;
 }
 
-.presentation-header-right {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 12px;
-}
 .presentation-logo {
   display: block;
-  width: min(180px, 24vw);
+  width: min(270px, 28vw);
   height: auto;
+  filter: invert(1);
 }
 .presentation-actions { display: flex; gap: 8px; }
 .presentation-action {
@@ -437,7 +432,6 @@ a { color: inherit; }
 .presentation-action:disabled { cursor: wait; opacity: .7; }
 
 .presentation-back,
-.presentation-wordmark,
 .presentation-details,
 .presentation-piece figcaption {
   font-family: 'DM Mono', monospace;
@@ -452,11 +446,20 @@ a { color: inherit; }
 .presentation-status.is-error { color: #a43030; }
 
 .presentation-hero {
-  padding: clamp(72px, 13vw, 155px) 0 clamp(52px, 8vw, 94px);
+  padding: clamp(36px, 6.5vw, 78px) 0 clamp(52px, 8vw, 94px);
   max-width: 850px;
 }
 
-.presentation-wordmark { margin: 0 0 13px; color: #74777c; }
+.presentation-wordmark {
+  max-width: 62ch;
+  margin: 0 0 13px;
+  color: #40444a;
+  font-size: clamp(25px, 3vw, 33px);
+  font-weight: 500;
+  letter-spacing: normal;
+  line-height: 1.5;
+  text-transform: none;
+}
 .presentation-student-name {
   margin: 0 0 22px;
   color: #202226;
@@ -519,11 +522,12 @@ a { color: inherit; }
 
 @media (max-width: 560px) {
   .presentation-shell { width: min(100% - 32px, 1180px); padding-top: 20px; }
+  .presentation-header { flex-wrap: wrap; gap: 12px; }
   .roll-header { gap: 12px; }
   .project-view-link { padding: 9px 10px; font-size: 10px; }
   .presentation-action { padding: 9px 8px; font-size: 9px; }
-  .presentation-header-right { gap: 9px; }
-  .presentation-logo { width: 128px; }
+  .presentation-logo { width: 112px; }
+  .presentation-actions { width: 100%; justify-content: flex-end; }
   .presentation-gallery { grid-template-columns: 1fr; gap: 34px; }
   .presentation-piece img { height: auto; max-height: 480px; }
 }

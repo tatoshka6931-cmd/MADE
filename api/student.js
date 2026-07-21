@@ -41,6 +41,12 @@ function getStudentName(fields) {
   return Array.isArray(value) ? value.filter(Boolean).join(' ') : String(value || '');
 }
 
+function formatCollaborators(names) {
+  const uniqueNames = [...new Set(names.map((name) => name.trim()).filter(Boolean))];
+  if (uniqueNames.length < 3) return uniqueNames.join(' & ');
+  return `${uniqueNames.slice(0, -1).join(', ')} & ${uniqueNames[uniqueNames.length - 1]}`;
+}
+
 // Project records use an Airtable-only identifier such as RN26Speaker.
 // Keep the prefix for Airtable matching, but expose only the human-readable
 // project name to the portfolio.
@@ -106,9 +112,9 @@ module.exports = async (req, res) => {
         // use its first supplied non-empty description.
         const description = getDescriptionValue(project.fields)
           || photoRecords.map((record) => getDescriptionValue(record.fields)).find((value) => value.trim());
-        const studentName = photoRecords
-          .map((record) => getStudentName(record.fields).trim())
-          .find(Boolean);
+        const studentName = formatCollaborators(
+          photoRecords.map((record) => getStudentName(record.fields))
+        );
 
         return {
           id: project.id,
@@ -129,7 +135,9 @@ module.exports = async (req, res) => {
     });
 
     res.status(200).json({
-      name: projectsWithPhotos.map((project) => project.studentName).find(Boolean) || student.fields['Name'] || 'Student',
+      // The portfolio list belongs to the Student record selected by email.
+      // Individual projects use the submitted name(s) returned above.
+      name: student.fields['Name'] || 'Student',
       projects: projectsWithPhotos,
     });
   } catch (err) {

@@ -144,28 +144,44 @@ async function downloadProjectPdf() {
     const pageHeight = pdf.internal.pageSize.getHeight();
     const margin = 16;
     const contentWidth = pageWidth - margin * 2;
-    let cursorY = 22;
+    let cursorY = 23;
+
+    await addPdfLogo(pdf, pageWidth, margin);
+
+    pdf.setFont('helvetica', 'normal');
+    pdf.setFontSize(15);
+    pdf.setTextColor(64);
+    pdf.text("Wond'ry Project Portfolio", margin, cursorY);
+    cursorY += 12;
 
     pdf.setFont('helvetica', 'bold');
-    pdf.setFontSize(25);
+    pdf.setFontSize(24);
+    pdf.setTextColor(32);
+    const studentNameLines = pdf.splitTextToSize(loadedStudentName, contentWidth);
+    pdf.text(studentNameLines, margin, cursorY);
+    cursorY += studentNameLines.length * 9 + 8;
+
+    pdf.setFont('times', 'bold');
+    pdf.setFontSize(35);
+    pdf.setTextColor(23);
     const titleLines = pdf.splitTextToSize(loadedProject.name, contentWidth);
     pdf.text(titleLines, margin, cursorY);
-    cursorY += titleLines.length * 10 + 4;
+    cursorY += titleLines.length * 13 + 7;
 
     const projectDescription = getProjectDescription(loadedProject);
     if (projectDescription) {
       pdf.setFont('helvetica', 'normal');
-      pdf.setFontSize(11);
-      pdf.setTextColor(50);
+      pdf.setFontSize(12);
+      pdf.setTextColor(64);
       const descriptionLines = pdf.splitTextToSize(projectDescription, contentWidth);
       pdf.text(descriptionLines, margin, cursorY);
-      cursorY += descriptionLines.length * 5 + 6;
+      cursorY += descriptionLines.length * 5.5 + 8;
     }
 
     pdf.setFont('helvetica', 'normal');
     pdf.setFontSize(10);
-    pdf.setTextColor(90);
-    pdf.text(`${loadedStudentName}  |  ${getProjectDateRange(loadedProject)}`, margin, cursorY);
+    pdf.setTextColor(32);
+    pdf.text(getProjectDateRange(loadedProject), margin, cursorY);
     cursorY += 12;
 
     // A compact two-column gallery uses the page efficiently while keeping
@@ -229,6 +245,19 @@ function loadPdfImage(url) {
     image.onerror = () => reject(new Error('One of the project images could not be added to the PDF.'));
     image.src = url;
   });
+}
+
+async function addPdfLogo(pdf, pageWidth, margin) {
+  const logo = await loadPdfImage('/header_logo.png');
+  const canvas = document.createElement('canvas');
+  canvas.width = logo.naturalWidth;
+  canvas.height = logo.naturalHeight;
+  const context = canvas.getContext('2d');
+  context.filter = 'invert(1)';
+  context.drawImage(logo, 0, 0);
+  const logoWidth = 66;
+  const logoHeight = logoWidth * (logo.naturalHeight / logo.naturalWidth);
+  pdf.addImage(canvas, 'PNG', pageWidth - margin - logoWidth, 14, logoWidth, logoHeight);
 }
 
 function safeFilename(value) {
