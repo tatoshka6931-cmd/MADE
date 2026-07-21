@@ -36,6 +36,20 @@ function getDescriptionValue(fields) {
   return Array.isArray(value) ? value.filter(Boolean).join('\n') : String(value || '');
 }
 
+function getStudentName(fields) {
+  const value = fields['Student Name'];
+  return Array.isArray(value) ? value.filter(Boolean).join(' ') : String(value || '');
+}
+
+// Project records use an Airtable-only identifier such as RN26Speaker.
+// Keep the prefix for Airtable matching, but expose only the human-readable
+// project name to the portfolio.
+function displayProjectName(value) {
+  const projectName = String(value || '').trim();
+  const match = projectName.match(/^[a-z]{2}\d{2,4}(.+)$/i);
+  return match ? match[1].trim() : projectName;
+}
+
 module.exports = async (req, res) => {
   const email = (req.query.email || '').trim().toLowerCase();
   if (!email) return res.status(400).json({ error: 'Missing email' });
@@ -92,11 +106,15 @@ module.exports = async (req, res) => {
         // use its first supplied non-empty description.
         const description = getDescriptionValue(project.fields)
           || photoRecords.map((record) => getDescriptionValue(record.fields)).find((value) => value.trim());
+        const studentName = photoRecords
+          .map((record) => getStudentName(record.fields).trim())
+          .find(Boolean);
 
         return {
           id: project.id,
-          name: project.fields['Project Name'] || 'Untitled project',
+          name: displayProjectName(project.fields['Project Name']) || 'Untitled project',
           description: description || '',
+          studentName: studentName || '',
           status: project.fields['Status'] || '',
           photos: sortedPhotos,
         };
@@ -111,7 +129,7 @@ module.exports = async (req, res) => {
     });
 
     res.status(200).json({
-      name: student.fields['Name'] || 'Student',
+      name: projectsWithPhotos.map((project) => project.studentName).find(Boolean) || student.fields['Name'] || 'Student',
       projects: projectsWithPhotos,
     });
   } catch (err) {

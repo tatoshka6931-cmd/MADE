@@ -20,7 +20,7 @@ async function loadProject() {
     if (!res.ok) throw new Error(data.error || 'Unable to load this project.');
     const project = data.projects?.find((item) => item.id === projectId);
     if (!project) throw new Error('This project could not be found.');
-    renderProject(project, data.name);
+    renderProject(project, project.studentName || data.name);
   } catch (error) {
     showError(error.message || 'Unable to load this project.');
   }
