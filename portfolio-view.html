@@ -12,7 +12,10 @@
   <main class="presentation-shell">
     <header class="presentation-header">
       <a class="presentation-back" href="portfolio.html">← All projects</a>
-      <span class="presentation-wordmark">MADE · STUDENT WORK</span>
+      <div class="presentation-actions">
+        <button id="copy-presentation-link" class="presentation-action" type="button">Copy link</button>
+        <button id="save-presentation-pdf" class="presentation-action presentation-action-dark" type="button">Save as PDF</button>
+      </div>
     </header>
     <div id="presentation-status" class="presentation-status" role="status">Loading project…</div>
     <article id="presentation" hidden></article>

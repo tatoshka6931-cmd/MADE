@@ -1,5 +1,7 @@
 const statusEl = document.getElementById('presentation-status');
 const presentationEl = document.getElementById('presentation');
+const copyLinkBtn = document.getElementById('copy-presentation-link');
+const savePdfBtn = document.getElementById('save-presentation-pdf');
 const params = new URLSearchParams(window.location.search);
 const email = params.get('email');
 const projectId = params.get('project');
@@ -34,10 +36,13 @@ function renderProject(project, studentName) {
   eyebrow.textContent = studentName;
   const title = document.createElement('h1');
   title.textContent = project.name;
+  const dateRange = document.createElement('p');
+  dateRange.className = 'presentation-date-range';
+  dateRange.textContent = getProjectDateRange(project);
   const details = document.createElement('p');
   details.className = 'presentation-details';
   details.textContent = `${project.photos.length} selected work${project.photos.length === 1 ? '' : 's'}${project.status ? ` · ${project.status}` : ''}`;
-  hero.append(eyebrow, title, details);
+  hero.append(eyebrow, title, dateRange, details);
   presentationEl.appendChild(hero);
 
   if (!project.photos.length) {
@@ -74,9 +79,38 @@ function formatDate(value) {
   return Number.isNaN(date.getTime()) ? 'Project image' : date.toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' });
 }
 
+function formatShortDate(value) {
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return '';
+  return date.toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: '2-digit' });
+}
+
+function getProjectDateRange(project) {
+  const dates = project.photos
+    .map((photo) => new Date(photo.uploadedAt))
+    .filter((date) => !Number.isNaN(date.getTime()))
+    .sort((a, b) => a - b);
+  if (!dates.length) return '';
+  const firstUpload = formatShortDate(dates[0]);
+  const isInProgress = project.status.trim().toLowerCase() === 'in progress';
+  return `${firstUpload} — ${isInProgress ? 'Present' : formatShortDate(dates[dates.length - 1])}`;
+}
+
 function showError(message) {
   statusEl.textContent = message;
   statusEl.classList.add('is-error');
 }
+
+copyLinkBtn.addEventListener('click', async () => {
+  try {
+    await navigator.clipboard.writeText(window.location.href);
+    copyLinkBtn.textContent = 'Copied!';
+    setTimeout(() => { copyLinkBtn.textContent = 'Copy link'; }, 1600);
+  } catch {
+    copyLinkBtn.textContent = 'Copy unavailable';
+  }
+});
+
+savePdfBtn.addEventListener('click', () => window.print());
 
 loadProject();
