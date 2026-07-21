@@ -40,9 +40,10 @@ function renderProject(project, studentName) {
   eyebrow.textContent = studentName;
   const title = document.createElement('h1');
   title.textContent = project.name;
+  const projectDescription = getProjectDescription(project);
   const description = document.createElement('p');
   description.className = 'presentation-description';
-  description.textContent = project.description || '';
+  description.textContent = projectDescription;
   const dateRange = document.createElement('p');
   dateRange.className = 'presentation-date-range';
   dateRange.textContent = getProjectDateRange(project);
@@ -50,7 +51,7 @@ function renderProject(project, studentName) {
   details.className = 'presentation-details';
   details.textContent = `${project.photos.length} selected work${project.photos.length === 1 ? '' : 's'}${project.status ? ` · ${project.status}` : ''}`;
   hero.append(eyebrow, title);
-  if (project.description) hero.appendChild(description);
+  if (projectDescription) hero.appendChild(description);
   hero.append(dateRange, details);
   presentationEl.appendChild(hero);
 
@@ -81,6 +82,10 @@ function renderProject(project, studentName) {
     gallery.appendChild(figure);
   });
   presentationEl.appendChild(gallery);
+}
+
+function getProjectDescription(project) {
+  return typeof project.description === 'string' ? project.description.trim() : '';
 }
 
 function formatDate(value) {
@@ -140,8 +145,20 @@ async function downloadProjectPdf() {
 
     pdf.setFont('helvetica', 'bold');
     pdf.setFontSize(25);
-    pdf.text(loadedProject.name, margin, cursorY, { maxWidth: contentWidth });
-    cursorY += 14;
+    const titleLines = pdf.splitTextToSize(loadedProject.name, contentWidth);
+    pdf.text(titleLines, margin, cursorY);
+    cursorY += titleLines.length * 10 + 4;
+
+    const projectDescription = getProjectDescription(loadedProject);
+    if (projectDescription) {
+      pdf.setFont('helvetica', 'normal');
+      pdf.setFontSize(11);
+      pdf.setTextColor(50);
+      const descriptionLines = pdf.splitTextToSize(projectDescription, contentWidth);
+      pdf.text(descriptionLines, margin, cursorY);
+      cursorY += descriptionLines.length * 5 + 6;
+    }
+
     pdf.setFont('helvetica', 'normal');
     pdf.setFontSize(10);
     pdf.setTextColor(90);
