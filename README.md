@@ -5,7 +5,10 @@ Here's a list of things to complete in order to get a full working submission pr
    Ensure the file structure is kept: project.js, student.js, upload.js are under the api folder; .vscode folder contains settings.json
 3. go to vercel.com, create an account and connect it to your github repo. The easiest way is to sign up with your guthub account
 4. In vercel go to environment variables and create 2 variables:
+
    AIRTABLE_API_KEY = enter your api key
+   
    AIRTABLE_BASE_ID = enter base id
-6. Create the website deployment
-7. if the url of the deployment changes, make sure to regenerate a qr code and reprint the poster.
+   
+7. Create the website deployment
+8. if the url of the deployment changes, make sure to regenerate a qr code and reprint the poster.
